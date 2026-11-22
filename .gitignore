@@ -1,0 +1,15 @@
+# 本地资源软链接（指向本机绝对路径，不入库）
+/baselines/
+/data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/
