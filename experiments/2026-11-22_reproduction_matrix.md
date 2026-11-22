@@ -14,7 +14,7 @@
 | §1.4 机制计时（BLK/CMP/NMB/MEM） | ✅ 已复现 | `2026-11-22_pregated_profiling_mechanism.md` |
 | §1.5 质量（SQuAD EM/F1） | ❌ 受资源阻塞 | 需确认 checkpoint 是否含预门控微调权重 |
 | §1.6 拓展（base-128/256、large-128） | ❌ 权重未转 | 需 `convert.sh`，耗时待估 |
-| §2 KTransformers 端到端推理 | ❌ 受资源阻塞 | 缺 sglang-kt fork |
+| §2 KTransformers 端到端推理 | ⚠️ 部分复现 | sglang-kt 依赖安装中；外网带宽 ~20KB/s 阻塞 GGUF 下载（见 ktransformers_e2e_progress.md） |
 | §2 KTransformers 机制验证 | ❌ 未做 | — |
 | §2 论文 AMX 路径 | ❌ 受资源阻塞 | Xeon 8360Y 无 AMX |
 | §3 复现矩阵 | ✅ 本报告 | — |
