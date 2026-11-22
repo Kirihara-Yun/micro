@@ -1,0 +1,5 @@
+method,block_lat_ms,throughput_tok_s,peak_mem_bytes,max_active_experts,cache_hit_rate
+GPU-only,0.914287,151,16052649984,0,0.0
+Pre-gated,1.08754,120,26049773568,1,1.0
+DeepSpeed,1.7532,81,26049773568,1,1.0
+SE-MoE,50.5427,3,26047676416,1,1.0
