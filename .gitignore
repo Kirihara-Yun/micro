@@ -1,6 +1,8 @@
 # 本地资源软链接（指向本机绝对路径，不入库）
 /baselines/
 /data/
+/papers/*.pdf
+/papers/*.txt
 
 # Python
 __pycache__/
