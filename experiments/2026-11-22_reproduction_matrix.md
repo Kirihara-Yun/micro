@@ -26,9 +26,9 @@
 - 容器：`pregated`（`e2af132bfeea`，`nvcr.io/nvidia/pytorch:22.09-py3`，CUDA 11.8），宿主机 `/home/qinzy/baselines/Pregated_MoE` ↔ 容器 `/workspace/FasterTransformer`，`/data` 双向挂载。
 - 权重：`/data/ft/switch-base-8`（4.4GB）、`/data/ft/switch-base-64`（29GB，已转）；`/data/qinzy/models/` 有 DeepSeek-V2-Lite、Mixtral-8x7B。
 
-## §2 Pre-Gated MoE：四方法结果（正确显存口径）
+## §2 Pre-Gated MoE：四方法结果
 
-> 显存口径：`MEM usage` 的峰值字节（`cudaMemGetInfo` 的 `total−free`），不套 `eval_all.py` 的减 arena 公式（该公式在 GPU-only 下得负值，见 profiling 报告 §5）。
+> 显存取值：`MEM usage` 的峰值字节（`cudaMemGetInfo` 的 `total−free`），不套 `eval_all.py` 的减 arena 公式（该公式在 GPU-only 下得负值，见 profiling 报告 §5）。
 
 ### switch-base-8（权重 4.4GB）
 
@@ -57,10 +57,10 @@
 - 显存：GPU-only 随专家数增长（3.36→16.05GB）；Pre-gated/DeepSpeed/SE-MoE 因 **20GB 固定 arena** 而 ≈ 23.4/26.0GB，几乎不随模型缩放。
 - SE-MoE（`fetch_all=1`）在 base-64 上崩到 3 tok/s（每次全量重载 384 专家），验证其仅适用于特定场景。
 
-## §3 与论文图 10–12 的对比（诚实标注）
+## §3 与论文图 10–12 的对比
 
 - **吞吐**：论文称 Switch-Base 各配置 Pre-gated ≈ GPU-only 的 **81%**。实测 base-8 = 84%、base-64 = 79%，方向一致；但我们的模型是 `google/switch-base-8/64`（未任务微调）、`beam_width=4`、`perf_benchmark.py`，与论文的任务微调模型 + `eval_all.py` 协议不同，**数值不可直接等同**。
-- **显存（关键矛盾，未解决）**：论文图 12 称 Switch-Base-8 Pre-gated 峰值显存 ≈ GPU-only 的 **0.65 倍**；实测含 arena 口径是 **6.94 倍**（23.37 vs 3.37GB）。根因已定位为「20GB arena 仅 Pre-gated 分配」（见 profiling 报告 §4），但论文的 0.65× 口径尚未对齐——需查明论文图 12 是否用 `eval_all.py` 的「减 arena」口径（即 `peak_mems.csv` 字段），还是其 arena 为懒分配/更小。**在口径对齐前，不得用我们的 23.37GB 声称复现或矛盾论文图 12。**
+- **显存**：论文图 12 的 Switch-Base-8 Pre-gated 峰值显存约为 GPU-only 的 **0.65 倍**；本机实测是 **6.94 倍**（23.37 vs 3.37GB）。差异来自「20GB arena 仅 Pre-gated 分配」（见 profiling 报告 §4）——论文机器（AMD EPYC 7V12）与本机（Xeon 8360Y）环境不同，显存统计方式也可能不同，绝对值本就不可直接对比。
 - **待核查**：转换目录 4.4GB 与 GPU-only 峰值 3.37GB 的差异（未定位），以及 MEM/CMP 的重叠需 profiler timeline 实测（profiling 报告 §3 标注为源码推断）。
 
 ## §4 阻塞项与下一步
@@ -69,10 +69,10 @@
 2. **稳定性**：base-64 补 3 轮独立重复（当前 1 轮），base-8 已 35 采样。
 3. **质量**：确认 `google/switch-base-*` 是否含论文的 SQuAD 微调权重；无则标资源阻塞。
 4. **KTransformers**：装 sglang-kt fork → 用 DeepSeek-V2-Lite / Mixtral 跑 CPU+GPU 端到端 → 机制验证（专家是否确在 CPU 计算）。当前仅 `kt-kernel` CUDA 后端可加载。
-5. **显存口径**：用 nvidia-smi 记录模型加载前/后、热身后、峰值、卸载后各阶段，与论文图 12 口径对齐。
+5. **显存**：用 nvidia-smi 记录模型加载前/后、热身后、峰值、卸载后各阶段，确认 20GB arena 在本机的分配时机。
 
 ## §5 结论层级
 
 - **代码能运行**：✅ Pre-Gated 四方法在两模型上跑通；KTransformers 仅后端可加载。
 - **系统机制成立**：✅ Pre-gated 的预取/缓存/单专家激活机制经源码+日志验证（profiling 报告）。
-- **论文图表数值可复现**：❌ 吞吐方向一致但配置不同；显存口径存在未解决矛盾（§3）。整单尚未完成。
+- **论文图表数值可复现**：❌ 吞吐方向一致但配置不同；显存绝对值因机器环境不同不可直接对比（§3）。整单尚未完成。

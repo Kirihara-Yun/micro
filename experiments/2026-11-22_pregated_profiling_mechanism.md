@@ -3,19 +3,19 @@
 > 日期：2026-11-22
 > 范围：`ranggihwang/Pregated_MoE` @ `6b0a666` 的 profiling 事件（BLK/CMP/NMB/MEM）、cache hit rate、20GB arena 分配位置，以及 `scripts/eval_all.py` / `scripts/eval_ubench.py` 解析脚本的正确性。
 > 方法：源码静态核查 + 仓库 `baselines/Pregated_MoE/logs/` 下 4 份真机日志交叉验证。
-> 结论层级：事件定义/口径 = 源码确认；`MEM≈1.03ms / BLK≈1.08ms / cache hit rate=1` 并存 = 源码机制解释（未做 profiler timeline 实测，见 §3 标注）。
+> 结论层级：事件定义/统计方式 = 源码确认；`MEM≈1.03ms / BLK≈1.08ms / cache hit rate=1` 并存 = 源码机制解释（未做 profiler timeline 实测，见 §3 标注）。
 
 ## 0. 结论摘要
 
 1. BLK/CMP/NMB/MEM 四类事件的定义与 CUDA event 起止点已查明（§1）。
-2. cache hit rate 的统计口径已查明（§2）。
+2. cache hit rate 的统计方式已查明（§2）。
 3. `MEM≈1.03ms`、`BLK≈1.08ms`、`cache hit rate=1` 三者并存成立，机制已解释（§3）。
 4. 20GB arena 分配位置已定位：`FetcherContext` 构造 → `GroupedMemoryArena::initIfUninit` → `MemoryArena` 构造 → `cudaMallocPitch`（§4）。GPU-only 不创建 fetcher，故无 arena，解释了 3.37GB vs 23.37GB 的差异。
 5. 解析脚本发现 **3 处 bug**，其中 `eval_all.py` 的 `peak_mem` 在 GPU-only 下为 **−20.87GB（负值）**，直接影响 `peak_mems.csv` 的正确性（§5）。
 
 ---
 
-## 1. profiling 事件定义与口径
+## 1. profiling 事件定义与统计方式
 
 事件枚举与名称一一对应（`src/fastertransformer/utils/profiling.h:9` 与 `profiling.cc:21`）：
 
@@ -35,7 +35,7 @@
 | **MEM** | `utils/fetcher.cc:84` 起（`fetch()` 发起异步加载前）、`:131` 止（`sync()` 等待 `futures_` 完成并 `cudaStreamSynchronize` 后） | 一次专家权重搬运/拷贝的等待窗口 | fetcher 独立 stream |
 | **CMP** | `kernels/moe_kernels.cu:878` 起、`:925` 止 | MoE GEMM（fc1 + fc2）计算区间 | 主 stream |
 
-统计口径（`profiling.cc:56-75`）：`report()` 按 `i += 2` 把 `*_S/*_E` 配对，`cudaEventElapsedTime` 求每对时长，再 `AverageMeter` 取平均，输出 `NMB AVG / BLK AVG / MEM AVG / CMP AVG`（`substr(0,3)` 得前缀）。
+统计方式（`profiling.cc:56-75`）：`report()` 按 `i += 2` 把 `*_S/*_E` 配对，`cudaEventElapsedTime` 求每对时长，再 `AverageMeter` 取平均，输出 `NMB AVG / BLK AVG / MEM AVG / CMP AVG`（`substr(0,3)` 得前缀）。
 
 真机日志佐证（`logs/switch-base-8_GPU-only_1_0_0_0.log:197`）：
 
@@ -102,7 +102,7 @@ auto future = pool_->push([=](int) {
 - GPU-only：`encoder_fetcher_mode=0, decoder_fetcher_mode=0` → 无 FetcherContext → 不分配 arena → 峰值显存仅模型权重+激活 = **3.37GB**（真机日志 `MEM usage: 3322937344`）。
 - Pre-gated：`decoder_fetcher_mode=2` → 创建 fetcher → 分配 20GB arena → 峰值显存 = 3.37 + 20 = **23.37GB**（真机日志 `MEM usage: 23279435776 23354933248`，约 21.7GiB）。
 
-这与现有报告 `2026-11-22_pregated_switch-base-8.md` 记录的 3.37/23.37GB 一致，差异**不是论文矛盾，而是 20GB 固定 arena 的设计开销**——在 switch-base-8（专家总量仅 4.4GB）这种小模型上，arena 反成为显存主导，这正是论文适用前提「模型大到 GPU 装不下才受益」的反面例证。
+这与现有报告 `2026-11-22_pregated_switch-base-8.md` 记录的 3.37/23.37GB 一致，差异**是 20GB 固定 arena 的设计开销，而非运行异常**——在 switch-base-8（专家总量仅 4.4GB）这种小模型上，arena 反成为显存主导，这正是论文适用前提「模型大到 GPU 装不下才受益」的反面例证。
 
 ---
 
