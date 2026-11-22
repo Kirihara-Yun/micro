@@ -27,3 +27,23 @@
 2. 23.37GB 峰值显存由哪些分配组成？与论文图 12 的统计口径能否对齐？
 3. `cache hit rate=1` 的定义是什么？是否意味着传输全部被命中，或只是指标名称不同？与每层 `MEM≈1.03ms` 如何同时成立？
 4. KTransformers 当前版本的 CPU/GPU 放置、专家量化与调度路径，和 SOSP 论文实现相差多少？
+
+## 复现报告回传后的研读更新（2026-11-22）
+
+当前总报告见 [复现矩阵](../experiments/2026-11-22_reproduction_matrix.md)，KTransformers 的端到端结果见 [Mixtral 报告](../experiments/2026-11-22_ktransformers_mixtral_e2e.md)。两条路线都已具备功能复现证据，适合进入论文机制研究；论文图表数值和质量结果仍须按各自条件解读。
+
+### Pre-Gated MoE：值得研究的核心问题
+
+Base-8/64/128 的四方法数据支持论文的主要性能方向：Pre-gated 比 MoE-OnDemand 和 MoE-Prefetch 快，但仍慢于能完整驻留模型的 GPU-only。Base-128 时本机显存为 29.12GB 对 GPU-only 30.55GB，首次出现容量优势。这个交叉点与论文图 12 的 Base-8 优势不同；不能仅以“CPU 型号不同”解释，因为 **20GB 固定 arena 和峰值统计方式**直接影响比较。应先查论文 artifact 的 arena 配置、图 12 归一化前的实际内存值，以及本地日志和论文是否采用同一指标。
+
+论文的关键算法问题是：预门控从上一层信息确定下一层专家，与原门控相比是否改变路由和任务质量？当前报告没有 SQuAD 微调模型与 EM/F1，故只研究了系统性能，尚未验证算法质量。另一个机制问题是预取隐藏了多少实际 H2D 时间：报告根据源码说明 MEM 事件包含 cache 命中后的 D2D 拷贝和同步，且与 CMP 跨层重叠；需要时间线才能把真实 H2D、D2D、等待和计算分开。
+
+### KTransformers：值得研究的核心问题
+
+Mixtral GGUF 的 LLAMAFILE 路径已端到端生成，报告给出 1 GPU expert/层、其余专家由 CPU 处理的配置和低于全模型大小的 GPU 显存。这是 CPU/GPU 异构功能证据；若要严格证明 CPU 专家执行比例、异步重叠和瓶颈，还需 CPU/GPU profiler 或可对照的消融。SOSP 论文性能主张来自 AMX CPU、不同模型和优化路径，当前 AVX-512 + Mixtral 数据不能验证其倍数。
+
+Mixtral 报告中约 8、512、2048 token prompt 的 TTFT 都约 0.23 秒，这一现象需要核对**实际服务端输入 token 计数、前缀缓存命中和 TTFT 计时边界**。在核实之前，不把这组数解释为长 prompt prefill 性能。超过 4096 token 的 CPU prefill 路径仍有 `submit_write_weight_scale_to_buffer` 缺失错误，因此该路径目前未跑通。
+
+### 两篇论文的共同研究轴
+
+两篇论文解决的都是 GPU 显存无法常驻全部专家时的推理问题，但资源配置不同：Pre-Gated 把选中的权重提前搬到 GPU 计算；KTransformers 把多数专家留在 CPU 计算。接下来最有价值的是建立统一的成本模型：每 token 的专家参数字节量、PCIe 搬运时间、CPU 专家计算时间、GPU 计算时间、可重叠区间、缓存命中率和固定显存开销。模型与任务不同时不要直接比较现有 tokens/s。
