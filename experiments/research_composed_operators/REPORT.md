@@ -1,5 +1,7 @@
 # 单阶段 vs 双阶段条件变换训练对比（单卡 A100）
 
+> **审查更新（2026-11-23）**：本轮质量排名和解码性能结论已撤回。原始实现存在未来 token 泄漏、top-1 MoE 未屏蔽未选专家，以及解码重算整个序列的问题。详见 [审查记录](../../papers/LOCAL_TRAINING_AUDIT_83d4577.md)。在仓库根目录运行 `python experiments/research_composed_operators/audit_protocol.py` 可复现前两个问题，并在 CPU 上检查修正参考实现。参考实现尚未接入正式训练和 KV cache 测速入口。
+
 > 日期：2026-11-23。目标：在共享主干上从头训练三种 FFN 变体（标准 MoE / 单阶段 / 双阶段条件变换），
 > 各 50M→100M tokens，用验证 NLL、训练吞吐与 batch=1 decode 延迟判断双阶段结构是否值得扩大训练。
 > **结论先行：双阶段相对单阶段无质量优势（100M NLL 5.23 vs 5.17），且 decode 慢 24%、训练慢 14%、参数多 7%。
