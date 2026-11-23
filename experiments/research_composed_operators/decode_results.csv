@@ -1,0 +1,4 @@
+ffn_kind,mem_gb,p50_ms,p95_ms,mean_ms,tok_per_s,active_weight_bytes
+moe,0.27,5.1,5.3,5.2,195.3,884736
+single,0.18,5.5,5.6,5.5,182.1,893952
+two,0.19,6.8,7.0,6.9,146.0,903168
