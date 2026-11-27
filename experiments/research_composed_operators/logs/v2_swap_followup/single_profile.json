@@ -1,0 +1,663 @@
+{
+  "kind": "single",
+  "device": "cuda:0",
+  "dtype": "torch.bfloat16",
+  "requests": 1,
+  "prompt_tokens": 128,
+  "decode_tokens": 63,
+  "buckets": {
+    "block_einsum": {
+      "host_self_us_per_token": 366.8496190476181,
+      "cuda_kernel_us_per_token": 16.121952380954372
+    },
+    "block_selection": {
+      "host_self_us_per_token": 294.88739682540063,
+      "cuda_kernel_us_per_token": 54.360650793648794
+    },
+    "decode_synchronization": {
+      "host_self_us_per_token": 8.73707936507884,
+      "cuda_kernel_us_per_token": 0.022349206349139825
+    },
+    "other_ffn": {
+      "host_self_us_per_token": 1341.2836507936702,
+      "cuda_kernel_us_per_token": 37.372761904767884
+    },
+    "outside_ffn": {
+      "host_self_us_per_token": 3937.4849365079335,
+      "cuda_kernel_us_per_token": 411.29361904760935
+    },
+    "routing": {
+      "host_self_us_per_token": 800.0622063491934,
+      "cuda_kernel_us_per_token": 84.16596825398047
+    },
+    "shared_ffn_projections": {
+      "host_self_us_per_token": 1237.0350476190383,
+      "cuda_kernel_us_per_token": 68.57776190477368
+    }
+  },
+  "operators": [
+    {
+      "category": "block_einsum",
+      "name": "aten::as_strided",
+      "host_self_us_per_token": 16.116380952380453,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 36.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "aten::bmm",
+      "host_self_us_per_token": 143.291793650797,
+      "cuda_kernel_us_per_token": 16.121952380954372,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "aten::einsum",
+      "host_self_us_per_token": 112.98555555552652,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "aten::permute",
+      "host_self_us_per_token": 32.38322222222975,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 30.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "aten::reshape",
+      "host_self_us_per_token": 8.499952380938412,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "aten::unsqueeze",
+      "host_self_us_per_token": 6.2109841269876265,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "aten::view",
+      "host_self_us_per_token": 12.763746031775106,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 24.0
+    },
+    {
+      "category": "block_einsum",
+      "name": "cudaLaunchKernel",
+      "host_self_us_per_token": 34.59798412698327,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::arange",
+      "host_self_us_per_token": 53.49128571430991,
+      "cuda_kernel_us_per_token": 8.221507936499938,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::as_strided",
+      "host_self_us_per_token": 13.478063492062084,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::empty",
+      "host_self_us_per_token": 27.801825396822196,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::index",
+      "host_self_us_per_token": 98.69774603174665,
+      "cuda_kernel_us_per_token": 46.139142857148855,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::reshape",
+      "host_self_us_per_token": 12.089333333329243,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::resize_",
+      "host_self_us_per_token": 21.071126984119417,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "block_selection",
+      "name": "aten::view",
+      "host_self_us_per_token": 7.586698412689772,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "block_selection",
+      "name": "cudaLaunchKernel",
+      "host_self_us_per_token": 60.67131746032137,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "decode_synchronization",
+      "name": "cudaDeviceSynchronize",
+      "host_self_us_per_token": 8.73707936507884,
+      "cuda_kernel_us_per_token": 0.022349206349139825,
+      "calls_per_token": 1.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::as_strided",
+      "host_self_us_per_token": 14.866539682539518,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 36.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::mul",
+      "host_self_us_per_token": 110.37385714285543,
+      "cuda_kernel_us_per_token": 25.190857142859443,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::silu",
+      "host_self_us_per_token": 67.86668253968034,
+      "cuda_kernel_us_per_token": 12.181904761908443,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::slice",
+      "host_self_us_per_token": 11.65211111110058,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::squeeze",
+      "host_self_us_per_token": 9.41606349206705,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::unsqueeze",
+      "host_self_us_per_token": 29.05580952382365,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 24.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "aten::view",
+      "host_self_us_per_token": 12.20653968254528,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "other_ffn",
+      "name": "cudaLaunchKernel",
+      "host_self_us_per_token": 90.15228571428379,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::_flash_attention_forward",
+      "host_self_us_per_token": 95.91853968253747,
+      "cuda_kernel_us_per_token": 81.13869841270095,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::_scaled_dot_product_flash_attention",
+      "host_self_us_per_token": 42.70888888889145,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::_unsafe_view",
+      "host_self_us_per_token": 0.6555396825386861,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 1.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::add",
+      "host_self_us_per_token": 136.69222222221214,
+      "cuda_kernel_us_per_token": 21.9832539682487,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::add_",
+      "host_self_us_per_token": 130.76296825397722,
+      "cuda_kernel_us_per_token": 20.564222222209313,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::addmm",
+      "host_self_us_per_token": 306.1245714285562,
+      "cuda_kernel_us_per_token": 54.47080952380169,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::arange",
+      "host_self_us_per_token": 8.021603174605504,
+      "cuda_kernel_us_per_token": 1.4069841269857202,
+      "calls_per_token": 2.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::argmax",
+      "host_self_us_per_token": 13.713428571430736,
+      "cuda_kernel_us_per_token": 21.76771428571154,
+      "calls_per_token": 1.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::as_strided",
+      "host_self_us_per_token": 56.178222222204546,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 129.8095238095238
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::chunk",
+      "host_self_us_per_token": 12.311126984123911,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::copy_",
+      "host_self_us_per_token": 89.12042857144363,
+      "cuda_kernel_us_per_token": 29.566269841281205,
+      "calls_per_token": 12.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::embedding",
+      "host_self_us_per_token": 5.3058095238220595,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 2.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::empty",
+      "host_self_us_per_token": 79.95126984127812,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 27.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::empty_like",
+      "host_self_us_per_token": 13.253730158726343,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::empty_strided",
+      "host_self_us_per_token": 66.24184126984836,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::index_select",
+      "host_self_us_per_token": 52.61349206348106,
+      "cuda_kernel_us_per_token": 7.095920634919734,
+      "calls_per_token": 2.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::linear",
+      "host_self_us_per_token": 64.96528571428476,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::matmul",
+      "host_self_us_per_token": 4.439492063482883,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 1.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::mean",
+      "host_self_us_per_token": 156.7829682539644,
+      "cuda_kernel_us_per_token": 46.44036507937282,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::mm",
+      "host_self_us_per_token": 20.700761904770122,
+      "cuda_kernel_us_per_token": 28.92442857142614,
+      "calls_per_token": 1.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::mul",
+      "host_self_us_per_token": 204.5581111111208,
+      "cuda_kernel_us_per_token": 56.0939841269848,
+      "calls_per_token": 26.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::narrow",
+      "host_self_us_per_token": 28.003111111148552,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::pow",
+      "host_self_us_per_token": 152.58604761903655,
+      "cuda_kernel_us_per_token": 21.08880952380703,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::reshape",
+      "host_self_us_per_token": 33.37660317460148,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 38.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::reshape_as",
+      "host_self_us_per_token": 6.758793650796554,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::resize_",
+      "host_self_us_per_token": 10.05249206349076,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 3.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::result_type",
+      "host_self_us_per_token": 7.12266666667481,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::rms_norm",
+      "host_self_us_per_token": 143.42895238095613,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::rsqrt",
+      "host_self_us_per_token": 103.81660317459084,
+      "cuda_kernel_us_per_token": 20.75215873015971,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::scaled_dot_product_attention",
+      "host_self_us_per_token": 50.180777777770295,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::slice",
+      "host_self_us_per_token": 75.93992063489058,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 67.80952380952381
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::split",
+      "host_self_us_per_token": 18.47165079363671,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::t",
+      "host_self_us_per_token": 29.96065079364972,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::to",
+      "host_self_us_per_token": 3.7995714285675026,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 13.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::transpose",
+      "host_self_us_per_token": 60.52204761908018,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 61.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "aten::view",
+      "host_self_us_per_token": 26.677666666670266,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 51.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "cudaFuncSetAttribute",
+      "host_self_us_per_token": 7.71846031746539,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "cudaLaunchKernel",
+      "host_self_us_per_token": 639.9556507936675,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 126.0
+    },
+    {
+      "category": "outside_ffn",
+      "name": "cudaStreamIsCapturing",
+      "host_self_us_per_token": 5.184952380948816,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::_softmax",
+      "host_self_us_per_token": 53.45998412700101,
+      "cuda_kernel_us_per_token": 11.41744444443984,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::_unsafe_view",
+      "host_self_us_per_token": 3.520857142853048,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::argmax",
+      "host_self_us_per_token": 84.80126984126451,
+      "cuda_kernel_us_per_token": 28.626968253963096,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::as_strided",
+      "host_self_us_per_token": 13.79031746031339,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 24.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::div",
+      "host_self_us_per_token": 76.98546031745747,
+      "cuda_kernel_us_per_token": 9.907936507942583,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::gather",
+      "host_self_us_per_token": 81.17019047619819,
+      "cuda_kernel_us_per_token": 12.972285714293927,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::linear",
+      "host_self_us_per_token": 12.938063492079415,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::matmul",
+      "host_self_us_per_token": 24.260047619053577,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::mm",
+      "host_self_us_per_token": 116.8547936507872,
+      "cuda_kernel_us_per_token": 21.241333333341025,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::reshape",
+      "host_self_us_per_token": 5.41041269842485,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::softmax",
+      "host_self_us_per_token": 11.754666666661192,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::t",
+      "host_self_us_per_token": 13.677365079354512,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::transpose",
+      "host_self_us_per_token": 7.327888888893424,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "aten::view",
+      "host_self_us_per_token": 2.5079523809456856,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 6.0
+    },
+    {
+      "category": "routing",
+      "name": "cudaLaunchKernel",
+      "host_self_us_per_token": 161.49449206348393,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 30.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::_unsafe_view",
+      "host_self_us_per_token": 11.96142857144486,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::as_strided",
+      "host_self_us_per_token": 14.971000000007503,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::linear",
+      "host_self_us_per_token": 41.934936507943675,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::matmul",
+      "host_self_us_per_token": 79.59865079363199,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::mm",
+      "host_self_us_per_token": 407.8311111111135,
+      "cuda_kernel_us_per_token": 68.45687301588511,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::reshape",
+      "host_self_us_per_token": 15.345079365084313,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::t",
+      "host_self_us_per_token": 42.698253968257,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::transpose",
+      "host_self_us_per_token": 26.597317460302104,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "aten::view",
+      "host_self_us_per_token": 9.179571428572961,
+      "cuda_kernel_us_per_token": 0.0,
+      "calls_per_token": 18.0
+    },
+    {
+      "category": "shared_ffn_projections",
+      "name": "cudaLaunchKernel",
+      "host_self_us_per_token": 144.7792857142797,
+      "cuda_kernel_us_per_token": 0.12088888888857105,
+      "calls_per_token": 18.0
+    }
+  ]
+}

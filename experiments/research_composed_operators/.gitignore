@@ -1,4 +1,5 @@
 # 大数据与 checkpoint 不提交（留远端本机）
 data/*.npy
 logs/**/*.pt
+logs/**/*trace.json
 *.console.log

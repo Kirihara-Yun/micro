@@ -1,0 +1,48 @@
+{
+  "train": [
+    "--kind",
+    "two",
+    "--seed",
+    "20261124",
+    "--data",
+    "/home/qinzy/micro/experiments/research_composed_operators/data",
+    "--out",
+    "/home/qinzy/micro/experiments/research_composed_operators/logs/v2_swap_ablation_two_20261124",
+    "--steps",
+    "1529",
+    "--warmup",
+    "150",
+    "--eval-every",
+    "150",
+    "--batch",
+    "8",
+    "--accum",
+    "8",
+    "--eval-batches",
+    "20",
+    "--device",
+    "cuda",
+    "--bf16"
+  ],
+  "decode": [
+    "--checkpoint",
+    "logs/v2_swap_ablation_two_20261124/latest.pt",
+    "--prompts",
+    "data/val.npy",
+    "--prompt-len",
+    "128",
+    "--new-tokens",
+    "64",
+    "--requests",
+    "8",
+    "--rounds",
+    "3",
+    "--device",
+    "cuda",
+    "--bf16"
+  ],
+  "data_sha256": {
+    "train.npy": "1960dfe9dedd11709434bcc99c076fef300df32ff1fd15c4a3561e56047865e6",
+    "val.npy": "7380e73206904faa0c9fb8f242bb9b298c770c7445c0fd4593dc5fb679c66a9b"
+  }
+}
