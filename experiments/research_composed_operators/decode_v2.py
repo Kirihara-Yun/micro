@@ -39,18 +39,18 @@ def generate(model, prompt, count):
     return ttft, durations
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+def add_decode_arguments(parser):
     parser.add_argument("--checkpoint", required=True, type=Path)
     parser.add_argument("--prompts", required=True, type=Path, help="2D .npy of fixed token sequences")
     parser.add_argument("--prompt-len", type=int, default=128)
     parser.add_argument("--requests", type=int, default=8)
     parser.add_argument("--new-tokens", type=int, default=64)
-    parser.add_argument("--rounds", type=int, default=3)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--bf16", action="store_true")
-    args = parser.parse_args()
-    if min(args.prompt_len, args.requests, args.rounds) < 1 or args.new_tokens < 2:
+
+
+def load_decode_inputs(args, parser):
+    if min(args.prompt_len, args.requests) < 1 or args.new_tokens < 2:
         parser.error("Positive request sizes and at least two generated tokens are required")
     state = torch.load(args.checkpoint, map_location="cpu", weights_only=True)
     settings = state["settings"]
@@ -66,6 +66,18 @@ def main():
     if args.prompt_len + args.new_tokens - 1 > cfg.context:
         parser.error("Prompt and generation exceed the checkpoint context")
     prompts = torch.tensor(data[:args.requests, :args.prompt_len].astype(np.int64), device=device)
+    return model, prompts, settings["kind"]
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    add_decode_arguments(parser)
+    parser.add_argument("--rounds", type=int, default=3)
+    args = parser.parse_args()
+    if args.rounds < 1:
+        parser.error("Rounds must be positive")
+    model, prompts, kind = load_decode_inputs(args, parser)
+    device, dtype = prompts.device, next(model.parameters()).dtype
     generate(model, prompts[:1], args.new_tokens)
     for round_index in range(args.rounds):
         if device.type == "cuda":
@@ -75,7 +87,7 @@ def main():
             ttft, timings = generate(model, prompt.unsqueeze(0), args.new_tokens)
             prefill.append(ttft)
             decode.extend(timings)
-        metrics = dict(kind=settings["kind"], round=round_index + 1, device=str(device),
+        metrics = dict(kind=kind, round=round_index + 1, device=str(device),
                        dtype=str(dtype), requests=len(prompts), prompt_tokens=args.prompt_len,
                        decode_tokens=len(decode), ttft_p50_ms=float(np.median(prefill) * 1000),
                        p50_ms=float(np.median(decode) * 1000), p95_ms=float(np.percentile(decode, 95) * 1000),
