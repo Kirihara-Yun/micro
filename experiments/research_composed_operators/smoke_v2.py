@@ -14,6 +14,24 @@ from model_v2 import CausalTransformer, KVCache
 from train_v2 import run
 
 
+def check_ablation_initialization():
+    cfg = ModelConfig(vocab_size=64, d_model=32, n_layers=2, n_heads=4,
+                      context=12, n_groups=4, group_dim=8, n_candidates=4)
+    torch.manual_seed(cfg.seed)
+    swapped = CausalTransformer(cfg, "two").state_dict()
+    torch.manual_seed(cfg.seed)
+    identity = CausalTransformer(cfg, "two_no_swap").state_dict()
+    assert swapped.keys() == identity.keys()
+    indices = torch.arange(cfg.d_model)
+    for name, tensor in swapped.items():
+        if name.endswith(".swap_idx"):
+            assert torch.equal(identity[name], indices)
+            assert not torch.equal(tensor, indices)
+        else:
+            assert torch.equal(tensor, identity[name]), name
+    print("ablation: identical initial state except channel index buffers", flush=True)
+
+
 def check(kind, root, device, bf16):
     settings = dict(kind=kind, data=root, steps=4, seed=20261123, device=device,
                     lr=6e-4, warmup=2, batch=2, accum=2, eval_every=2,
@@ -67,12 +85,13 @@ def main():
     parser.add_argument("--bf16", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(1)
+    check_ablation_initialization()
     with TemporaryDirectory() as directory:
         root = Path(directory)
         rng = np.random.default_rng(123)
         for name in ("train", "val"):
             np.save(root / f"{name}.npy", rng.integers(64, size=(16, 12), dtype=np.uint32))
-        for kind in ("moe", "single", "two"):
+        for kind in ("moe", "single", "two", "two_no_swap"):
             check(kind, root, args.device, args.bf16)
 
 

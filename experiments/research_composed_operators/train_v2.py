@@ -121,7 +121,7 @@ def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--kind", required=True, choices=("moe", "single", "two"))
+    parser.add_argument("--kind", required=True, choices=("moe", "single", "two", "two_no_swap"))
     parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--steps", required=True, type=int)

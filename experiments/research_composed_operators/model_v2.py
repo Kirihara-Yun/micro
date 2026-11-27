@@ -25,6 +25,9 @@ class Top1MoE(Top1MoEReference):
 
 class CausalTransformer(CausalTransformerReference):
     def __init__(self, cfg, kind):
+        no_swap = kind == "two_no_swap"
+        if no_swap:
+            kind = "two"
         super().__init__(cfg, kind)
         # Isolate shared backbone initialization from the size of the FFN.
         generator = torch.Generator().manual_seed(cfg.seed)
@@ -52,6 +55,9 @@ class CausalTransformer(CausalTransformerReference):
                         table.normal_(std=0.02 / math.sqrt(cfg.group_dim))
                         table.add_(identity).mul_(cfg.n_candidates)
                         router.weight.mul_(0.1)
+                    if no_swap:
+                        # Retain the same index_select and change only its mapping.
+                        ffn.swap_idx.copy_(torch.arange(cfg.d_model, device=ffn.swap_idx.device))
 
     def forward(self, ids, cache=None):
         """Return logits. A supplied cache is updated in-place after the forward."""
